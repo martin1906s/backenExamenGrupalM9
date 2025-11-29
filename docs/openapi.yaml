@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info:
+  title: API de Gestión de Tareas
+  description: |
+    API completa para gestión de tareas con autenticación JWT.
+   
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desarrollo
+
+paths:
+  /api/registrar:
+    post:
+      summary: Registrar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "usuario@ejemplo.com"
+                password:
+                  type: string
+                  example: "password123"
+                rol:
+                  type: string
+                  example: "usuario"
+      responses:
+        '201':
+          description: Usuario registrado
+        '500':
+          description: Error del servidor
+ 
+  /api/login:
+    post:
+      summary: iniciar sesion
+      description: Inicia sesion con el usuario y contraseña  devuelve un jwt
+      tags:
+        - Autenticación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email del usuario
+                  example: "usuario@ejemplo.com"
+                password:
+                  type: string
+                  description: Contraseña del usuario
+                  example: "password123"
+               
+      responses:
+        '200':
+          description: logueado correctamente
+          content:
+            application/json:
+            Schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Mensaje de respuesta
+                  example: "Usuario logueado correctamente"
+                data:
+                  type: string
+                  description: Token JWT
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '400':
+          description: Error en los datos enviados
+        '500':
+          description: Error del servidor
+ 
+  /api/logout:
+    post:
+      summary: cerrar sesion
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: sesion cerrada correctamente
+        '500':
+          description: Error del servidor
+ 
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+
+
+
